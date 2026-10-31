@@ -1,0 +1,14 @@
+# 2026-10-31T21:46:16Z
+$ ./lab.sh status
+------------------------------------------------------------------------------------------------------------------------------------
+|                                                          DescribeStacks                                                          |
++------------------+---------------------------------------------------------------------------------------------------------------+
+|  TargetGroupArn  |  arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/breakf-Targe-AIBMIDHMPW6A/e9c6ec40d021ffaf   |
+|  DbHostname      |  db.lab.internal                                                                                              |
+|  AutoScalingGroup|  breakfix-lab-AppAsg-0LMCuRktOEpF                                                                             |
+|  DbSecretArn     |  arn:aws:secretsmanager:eu-west-1:123456789012:secret:rds!db-4af712f2-85ba-4846-b142-78dfe9a3de2e-WcW1ei      |
+|  WebsiteUrl      |  http://breakfix-Alb-mhhgw7QY2f4M-1705433226.eu-west-1.elb.amazonaws.com                                      |
+|  FlowLogGroupName|  /breakfix-lab/breakfix-lab/vpc-flow-logs                                                                     |
+|  Region          |  eu-west-1                                                                                                    |
++------------------+---------------------------------------------------------------------------------------------------------------+
+# exit: 0

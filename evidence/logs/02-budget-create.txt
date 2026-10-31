@@ -1,0 +1,3 @@
+# 2026-10-31T21:37:25Z
+$ aws budgets create-budget --account-id 123456789012 --region us-east-1 --budget file:///tmp/claude-1000/-home-pred-zero/d204af1c-f14a-4ebd-97a3-79b3051a3764/scratchpad/budget.json --notifications-with-subscribers file:///tmp/claude-1000/-home-pred-zero/d204af1c-f14a-4ebd-97a3-79b3051a3764/scratchpad/notif.json
+# exit: 0

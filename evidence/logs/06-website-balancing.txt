@@ -1,0 +1,9 @@
+# 2026-10-31T21:47:06Z
+$ bash -c for i in 1 2 3 4 5 6; do curl -s -m 5 http://breakfix-Alb-mhhgw7QY2f4M-1705433226.eu-west-1.elb.amazonaws.com | grep -o 'Served by.*</p>'; done
+Served by i-0fc850e01cd4cef8a in eu-west-1a</p>
+Served by i-089efa901a54af0ab in eu-west-1b</p>
+Served by i-089efa901a54af0ab in eu-west-1b</p>
+Served by i-0fc850e01cd4cef8a in eu-west-1a</p>
+Served by i-0fc850e01cd4cef8a in eu-west-1a</p>
+Served by i-089efa901a54af0ab in eu-west-1b</p>
+# exit: 0

@@ -1,0 +1,8 @@
+# 2026-10-31T21:37:02Z
+$ aws sts get-caller-identity --region eu-west-1
+{
+    "UserId": "123456789012",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:root"
+}
+# exit: 0

@@ -1,0 +1,8 @@
+# 2026-10-31T21:37:27Z
+$ aws budgets describe-budgets --account-id 123456789012 --region us-east-1 --query Budgets[].[BudgetName,BudgetLimit.Amount] --output table
+-------------------------------
+|       DescribeBudgets       |
++--------------------+--------+
+|  lab-monthly-10usd |  10.0  |
++--------------------+--------+
+# exit: 0

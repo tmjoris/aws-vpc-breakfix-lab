@@ -1,0 +1,48 @@
+# 2026-10-31T21:53:23Z
+$ aws ssm get-command-invocation --region eu-west-1 --command-id 8ad34698-7635-435b-bd47-65a71ad29f7d --instance-id i-0fc850e01cd4cef8a --query [Status,StandardOutputContent,StandardErrorContent] --output text
+Success	    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host noprefixroute 
+    inet 10.0.11.61/24 metric 512 brd 10.0.11.255 scope global dynamic ens5
+    inet6 fe80::4ff:dcff:fe02:f3dd/64 scope link proto kernel_ll 
+default via 10.0.11.1 dev ens5 proto dhcp src 10.0.11.61 metric 512 
+10.0.0.2 via 10.0.11.1 dev ens5 proto dhcp src 10.0.11.61 metric 512 
+10.0.11.0/24 dev ens5 proto kernel scope link src 10.0.11.61 metric 512 
+10.0.11.1 dev ens5 proto dhcp scope link src 10.0.11.61 metric 512 
+# This is /run/systemd/resolve/resolv.conf managed by man:systemd-resolved(8).
+# Do not edit.
+#
+# This file might be symlinked as /etc/resolv.conf. If you're looking at
+# /etc/resolv.conf and seeing this text, you have followed the symlink.
+#
+# This is a dynamic resolv.conf file for connecting local clients directly to
+# all known uplink DNS servers. This file lists all configured search domains.
+#
+# Third party programs should typically not access this file directly, but only
+# through the symlink at /etc/resolv.conf. To manage man:resolv.conf(5) in a
+# different way, replace this symlink by a static file or a different symlink.
+#
+# See man:systemd-resolved.service(8) for details about the supported modes of
+# operation for /etc/resolv.conf.
+
+nameserver 10.0.0.2
+search eu-west-1.compute.internal
+breakfix-lab-database-c3txypk8lyf2.cb6i48kmq8zg.eu-west-1.rds.amazonaws.com.
+10.0.21.201
+Ncat: Version 7.93 ( https://nmap.org/ncat )
+Ncat: Connected to 10.0.21.201:5432.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+HTTP/1.1 200 OK
+Server: nginx/1.30.6
+Date: Sat, 31 Oct 2026 21:53:08 GMT
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                         
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1903,fd=7))                                                 
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=4580,fd=8),("nginx",pid=4579,fd=8),("nginx",pid=4578,fd=8))
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=1903,fd=8))                                                 
+LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=4580,fd=9),("nginx",pid=4579,fd=9),("nginx",pid=4578,fd=9))
+traceroute to aws.amazon.com (18.65.194.128), 4 hops max, 60 byte packets
+ 1  * * *
+ 2  * * *
+ 3  * * *
+ 4  * * *
+	
+# exit: 0

@@ -1,0 +1,9 @@
+# 2026-10-31T21:47:03Z
+$ bash -c export PATH=$HOME/.local/bin:$PATH; aws elbv2 describe-target-health --region eu-west-1 --target-group-arn arn:aws:elasticloadbalancing:eu-west-1:123456789012:targetgroup/breakf-Targe-AIBMIDHMPW6A/e9c6ec40d021ffaf --query 'TargetHealthDescriptions[].[Target.Id,TargetHealth.State]' --output table
+------------------------------------
+|       DescribeTargetHealth       |
++----------------------+-----------+
+|  i-0fc850e01cd4cef8a |  healthy  |
+|  i-089efa901a54af0ab |  healthy  |
++----------------------+-----------+
+# exit: 0
