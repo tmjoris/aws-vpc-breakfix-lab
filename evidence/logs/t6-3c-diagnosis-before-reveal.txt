@@ -1,0 +1,5 @@
+# 2026-10-31T23:15:17Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: site times out; targets unhealthy (Target.Timeout); nginx, DNS, DB and outbound fine on the instances.
+app-sg is correct (TCP 80 from alb-sg). Flow logs: inbound REJECTs from the ALB nodes to the instances on port 80.
+app-nacl inbound rule 100 (TCP 80 from 10.0.0.0/16) is DENY; it should be ALLOW.
+Diagnosis: the app-tier network ACL denies inbound HTTP from the VPC.

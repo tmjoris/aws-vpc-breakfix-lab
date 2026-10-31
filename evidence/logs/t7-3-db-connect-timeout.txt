@@ -1,0 +1,7 @@
+# 2026-10-31T23:21:53Z database reachability from an app instance
+== nc with a 5s wait
+Ncat: Version 7.93 ( https://nmap.org/ncat )
+Ncat: TIMEOUT.
+exit=1
+== psql
+	

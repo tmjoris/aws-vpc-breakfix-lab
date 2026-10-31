@@ -1,0 +1,3 @@
+# 2026-10-31T23:29:20Z
+$ aws ec2 replace-route --region eu-west-1 --route-table-id rtb-0b8d66db3aabf82ac --destination-cidr-block 0.0.0.0/0 --nat-gateway-id nat-051451fc091f94877
+# exit: 0

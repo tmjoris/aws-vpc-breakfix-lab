@@ -1,0 +1,5 @@
+# 2026-10-31T22:50:24Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: site times out from everywhere; TCP connect to the ALB never completes (20s).
+Targets healthy and SSM Online, so the instances and the ALB-to-instance path are fine.
+public-rt has only the local route: no 0.0.0.0/0 to the internet gateway.
+Diagnosis: the public subnets (ALB) have no route to the internet gateway.

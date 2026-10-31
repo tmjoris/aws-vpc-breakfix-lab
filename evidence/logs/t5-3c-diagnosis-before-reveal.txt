@@ -1,0 +1,4 @@
+# 2026-10-31T23:07:30Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: site times out; ALB returns timeouts; targets unhealthy (Target.Timeout). nginx, DNS, DB and outbound fine on the instances.
+app-sg allows TCP 8080 from alb-sg, but nginx listens on 80. NACL, routes unchanged. Flow logs: inbound REJECT from the ALB nodes to the instances on port 80.
+Diagnosis: the app security group allows the wrong port from the ALB.

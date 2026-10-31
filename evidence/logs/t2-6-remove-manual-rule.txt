@@ -1,0 +1,3 @@
+# 2026-10-31T22:39:59Z
+$ aws ec2 delete-network-acl-entry --region eu-west-1 --network-acl-id acl-019e6016f0800179d --egress --rule-number 130
+# exit: 0

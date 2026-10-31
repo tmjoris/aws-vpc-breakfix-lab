@@ -1,0 +1,4 @@
+# 2026-10-31T22:58:23Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: website loads (200, both AZs) but the target group shows both targets unhealthy: Target.ResponseCodeMismatch.
+Health check path is /healthz; nginx returns 404 for it and 200 for /. The ALB fails open when every target is unhealthy, so users still get pages.
+Diagnosis: wrong health-check path on the target group, not an instance or network problem.

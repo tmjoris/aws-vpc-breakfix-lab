@@ -1,0 +1,5 @@
+# 2026-10-31T23:22:02Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: website fine, targets healthy, SSM Online, DNS resolves, but the database connection from the app instances times out (nc/psql).
+db-sg allows TCP 3306 (MySQL) from app-sg; RDS PostgreSQL listens on 5432. A timeout, not a refusal, means traffic is dropped by a filter, not by a closed port.
+Flow logs: REJECTs from app instances to the DB on port 5432.
+Diagnosis: the database security group allows the wrong port.

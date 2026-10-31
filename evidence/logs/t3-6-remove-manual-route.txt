@@ -1,0 +1,3 @@
+# 2026-10-31T22:52:06Z
+$ aws ec2 delete-route --region eu-west-1 --route-table-id rtb-0061a80b50eab54c5 --destination-cidr-block 0.0.0.0/0
+# exit: 0

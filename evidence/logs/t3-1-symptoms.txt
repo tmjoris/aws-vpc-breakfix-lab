@@ -1,0 +1,20 @@
+# 2026-10-31T22:43:37Z ticket 3: 1-symptoms
+## 1. website from outside (6 requests)
+HTTP 000 in 8.002764s  
+HTTP 000 in 8.002495s  
+HTTP 000 in 8.002597s  
+HTTP 000 in 8.002755s  
+HTTP 000 in 8.002585s  
+HTTP 000 in 8.002498s  
+## 2. what the load balancer thinks (target health)
+i-0fc850e01cd4cef8a	healthy	None
+i-089efa901a54af0ab	healthy	None
+## 3. Systems Manager
+i-089efa901a54af0ab	Online
+i-0fc850e01cd4cef8a	Online
+## 4. CloudWatch alarms
+breakfix-lab-Alb5xxAlarm-VeKYVQmvcTDR	OK
+breakfix-lab-UnhealthyHostsAlarm-LhtEzHaAZo79	OK
+## 5. from inside an app instance
+(instance i-089efa901a54af0ab, command status: Pending)
+

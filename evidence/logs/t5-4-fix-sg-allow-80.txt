@@ -1,0 +1,4 @@
+# 2026-10-31T23:07:42Z
+$ aws ec2 authorize-security-group-ingress --region eu-west-1 --group-id sg-08e4771eb7316436d --protocol tcp --port 80 --source-group sg-0f1eda73699099462 --query Return --output text
+True
+# exit: 0

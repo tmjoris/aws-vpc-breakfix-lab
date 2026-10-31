@@ -1,0 +1,9 @@
+# 2026-10-31T22:37:24Z flow-log REJECTs whose SOURCE is an app instance (10.0.11.x / 10.0.12.x)
+# columns: srcAddr srcPort dstAddr count   (srcPort 80 = nginx replying; dstAddr = an ALB node)
+10.0.12.253	80	10.0.1.149	48
+10.0.11.61	80	10.0.1.149	45
+10.0.12.253	80	10.0.2.50	43
+10.0.11.61	80	10.0.2.50	42
+10.0.11.61	47412	18.133.139.197	1
+10.0.11.61	44082	3.8.121.220	1
+10.0.11.61	35055	35.176.149.124	1

@@ -1,0 +1,25 @@
+# 2026-10-31T22:40:35Z ticket 2: 7-after-reset
+## 1. website from outside (6 requests)
+HTTP 200 in 0.498724s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.478118s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.397800s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.469893s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.465441s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.390166s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+## 2. what the load balancer thinks (target health)
+i-0fc850e01cd4cef8a	healthy	None
+i-089efa901a54af0ab	healthy	None
+## 3. Systems Manager
+i-089efa901a54af0ab	Online
+i-0fc850e01cd4cef8a	Online
+## 4. CloudWatch alarms
+breakfix-lab-Alb5xxAlarm-VeKYVQmvcTDR	OK
+breakfix-lab-UnhealthyHostsAlarm-LhtEzHaAZo79	ALARM
+## 5. from inside an app instance
+(instance i-089efa901a54af0ab, command status: Success)
+default route: default via 10.0.12.1 dev ens5 proto dhcp src 10.0.12.253 metric 512 
+dns db.lab.internal: breakfix-lab-database-c3txypk8lyf2.cb6i48kmq8zg.eu-west-1.rds.amazonaws.com. 10.0.21.201 
+tcp db:5432: Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+nginx on localhost: HTTP/1.1 200 OK
+outbound https: 200
+

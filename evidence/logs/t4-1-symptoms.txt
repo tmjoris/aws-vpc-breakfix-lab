@@ -1,0 +1,25 @@
+# 2026-10-31T22:57:21Z ticket 4: 1-symptoms
+## 1. website from outside (6 requests)
+HTTP 200 in 0.410828s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.389656s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.394440s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.396408s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.418461s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.398669s  Served by i-089efa901a54af0ab in eu-west-1b
+## 2. what the load balancer thinks (target health)
+i-0fc850e01cd4cef8a	unhealthy	Target.ResponseCodeMismatch
+i-089efa901a54af0ab	unhealthy	Target.ResponseCodeMismatch
+## 3. Systems Manager
+i-089efa901a54af0ab	Online
+i-0fc850e01cd4cef8a	Online
+## 4. CloudWatch alarms
+breakfix-lab-Alb5xxAlarm-VeKYVQmvcTDR	OK
+breakfix-lab-UnhealthyHostsAlarm-LhtEzHaAZo79	OK
+## 5. from inside an app instance
+(instance i-089efa901a54af0ab, command status: Success)
+default route: default via 10.0.12.1 dev ens5 proto dhcp src 10.0.12.253 metric 512 
+dns db.lab.internal: breakfix-lab-database-c3txypk8lyf2.cb6i48kmq8zg.eu-west-1.rds.amazonaws.com. 10.0.21.201 
+tcp db:5432: Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+nginx on localhost: HTTP/1.1 200 OK
+outbound https: 200
+

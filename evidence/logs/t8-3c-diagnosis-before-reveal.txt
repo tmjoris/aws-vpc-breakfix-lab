@@ -1,0 +1,4 @@
+# 2026-10-31T23:29:04Z diagnosis written BEFORE running ./lab.sh reveal
+Symptom: the website and targets are healthy, but the app instances cannot be managed (SSM commands stay Pending) and cannot reach the internet.
+private-rt default route 0.0.0.0/0 points at the internet gateway, not the NAT gateway. Private instances have no public IP, so outbound traffic has no working path.
+Diagnosis: the private route table's default route targets the IGW instead of the NAT gateway.

@@ -1,0 +1,6 @@
+# 2026-10-31T23:29:00Z Systems Manager view of the instances
+i-089efa901a54af0ab	Online	2026-11-01T02:20:26.727000+03:00
+i-0fc850e01cd4cef8a	Online	2026-11-01T02:20:21.900000+03:00
+# command that was sent earlier:
+InProgress	AWS-RunShellScript
+None

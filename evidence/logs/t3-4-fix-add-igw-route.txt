@@ -1,0 +1,6 @@
+# 2026-10-31T22:50:26Z
+$ aws ec2 create-route --region eu-west-1 --route-table-id rtb-0061a80b50eab54c5 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-02fd0f7355054170a
+{
+    "Return": true
+}
+# exit: 0

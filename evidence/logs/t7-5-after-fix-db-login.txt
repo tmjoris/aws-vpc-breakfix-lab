@@ -1,0 +1,8 @@
+# 2026-10-31T23:22:37Z after the fix: nc and psql login
+nc: Ncat: 0 bytes sent, 0 bytes received in 0.03 seconds.
+         connected_at          |  db   
+-------------------------------+-------
+ 2026-10-31 23:22:32.554538+00 | labdb
+(1 row)
+
+

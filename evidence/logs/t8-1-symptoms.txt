@@ -1,0 +1,20 @@
+# 2026-10-31T23:26:59Z ticket 8: 1-symptoms
+## 1. website from outside (6 requests)
+HTTP 200 in 0.471643s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.396884s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.392062s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.417789s  Served by i-089efa901a54af0ab in eu-west-1b
+HTTP 200 in 0.390829s  Served by i-0fc850e01cd4cef8a in eu-west-1a
+HTTP 200 in 0.488044s  Served by i-089efa901a54af0ab in eu-west-1b
+## 2. what the load balancer thinks (target health)
+i-0fc850e01cd4cef8a	healthy	None
+i-089efa901a54af0ab	healthy	None
+## 3. Systems Manager
+i-089efa901a54af0ab	Online
+i-0fc850e01cd4cef8a	Online
+## 4. CloudWatch alarms
+breakfix-lab-Alb5xxAlarm-VeKYVQmvcTDR	OK
+breakfix-lab-UnhealthyHostsAlarm-LhtEzHaAZo79	OK
+## 5. from inside an app instance
+(instance i-089efa901a54af0ab, command status: Pending)
+

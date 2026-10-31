@@ -1,0 +1,4 @@
+# 2026-10-31T23:07:28Z Reachability Analyzer: ALB network interface -> app instance i-0fc850e01cd4cef8a, TCP 80
+status=succeeded
+NetworkPathFound=false
+Explanation: ENI_SG_RULES_MISMATCH | component: - | security group: sg-08e4771eb7316436d | port ranges: 

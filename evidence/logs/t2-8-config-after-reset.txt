@@ -1,0 +1,28 @@
+# 2026-10-31T22:41:00Z ticket 2: 8-config-after-reset
+## route tables (name, destination, target, state)
+public-rt	10.0.0.0/16	local	active
+public-rt	0.0.0.0/0	igw-02fd0f7355054170a	active
+main	10.0.0.0/16	local	active
+private-rt	10.0.0.0/16	local	active
+private-rt	0.0.0.0/0	nat-051451fc091f94877	active
+## app-nacl entries (rule, direction, proto, ports, cidr, action)
+100	out	-1	all	0.0.0.0/0	allow
+32767	out	-1	all	0.0.0.0/0	deny
+100	in	6	80-80	10.0.0.0/16	allow
+110	in	6	1024-65535	0.0.0.0/0	allow
+32767	in	-1	all	0.0.0.0/0	deny
+## security group ingress (group, from, to, source)
+alb-sg	80	80	0.0.0.0/0
+db-sg	5432	5432	sg-08e4771eb7316436d
+app-sg	80	80	sg-0f1eda73699099462
+## target group health check
+HTTP	traffic-port	/	200
+## flow-log REJECTs, last 15 min (src, dst, dst port, count)
+5.182.208.153	10.0.1.149	23	13
+176.53.37.85	10.0.1.149	443	8
+45.152.243.61	10.0.1.149	443	8
+109.122.6.180	10.0.1.149	443	7
+109.122.6.97	10.0.1.149	443	7
+45.152.243.200	10.0.1.149	443	7
+109.122.6.117	10.0.1.149	443	7
+88.209.248.94	10.0.1.149	443	7
