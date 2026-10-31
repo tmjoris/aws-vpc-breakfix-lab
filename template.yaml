@@ -1,0 +1,489 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  AWS VPC Break-Fix Lab - a 3-tier network (ALB -> EC2 Auto Scaling -> RDS PostgreSQL)
+  across 2 Availability Zones, with VPC Flow Logs, CloudWatch alarms and a Route 53
+  private zone. The Fault parameter injects realistic misconfigurations to troubleshoot.
+
+Parameters:
+  Fault:
+    Type: String
+    Default: none
+    Description: Misconfiguration to inject. Leave as "none" for a healthy environment.
+    AllowedValues:
+      - none
+      - public-no-igw-route
+      - private-no-nat-route
+      - nacl-block-http
+      - nacl-no-ephemeral
+      - sg-wrong-port
+      - health-check-path
+      - db-sg-wrong-port
+      - dns-wrong-record
+  AlertEmail:
+    Type: String
+    Default: ""
+    Description: Optional email for CloudWatch alarm notifications (confirm the SNS email).
+  InstanceType:
+    Type: String
+    Default: t3.micro
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+
+Conditions:
+  HasEmail: !Not [!Equals [!Ref AlertEmail, ""]]
+  HasIgwRoute: !Not [!Equals [!Ref Fault, public-no-igw-route]]
+  PrivateRouteBroken: !Equals [!Ref Fault, private-no-nat-route]
+  NaclBlockHttp: !Equals [!Ref Fault, nacl-block-http]
+  NaclNoEphemeral: !Equals [!Ref Fault, nacl-no-ephemeral]
+  SgWrongPort: !Equals [!Ref Fault, sg-wrong-port]
+  HealthCheckWrong: !Equals [!Ref Fault, health-check-path]
+  DbSgWrong: !Equals [!Ref Fault, db-sg-wrong-port]
+  DnsWrong: !Equals [!Ref Fault, dns-wrong-record]
+
+Resources:
+  # ---------------------------------------------------------------- Network
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags: [{ Key: Name, Value: breakfix-vpc }]
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags: [{ Key: Name, Value: breakfix-igw }]
+
+  IgwAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags: [{ Key: Name, Value: public-a }]
+  PublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags: [{ Key: Name, Value: public-b }]
+  AppSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.11.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags: [{ Key: Name, Value: app-a }]
+  AppSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.12.0/24
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags: [{ Key: Name, Value: app-b }]
+  DbSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.21.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags: [{ Key: Name, Value: db-a }]
+  DbSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.22.0/24
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags: [{ Key: Name, Value: db-b }]
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags: [{ Key: Name, Value: public-rt }]
+  PublicDefaultRoute:
+    Type: AWS::EC2::Route
+    Condition: HasIgwRoute
+    DependsOn: IgwAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicAssocA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref PublicSubnetA, RouteTableId: !Ref PublicRouteTable }
+  PublicAssocB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref PublicSubnetB, RouteTableId: !Ref PublicRouteTable }
+
+  NatEip:
+    Type: AWS::EC2::EIP
+    DependsOn: IgwAttachment
+    Properties:
+      Domain: vpc
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatEip.AllocationId
+      SubnetId: !Ref PublicSubnetA
+      Tags: [{ Key: Name, Value: breakfix-nat }]
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags: [{ Key: Name, Value: private-rt }]
+  PrivateDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: IgwAttachment
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !If [PrivateRouteBroken, !Ref AWS::NoValue, !Ref NatGateway]
+      GatewayId: !If [PrivateRouteBroken, !Ref InternetGateway, !Ref AWS::NoValue]
+  AppAssocA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref AppSubnetA, RouteTableId: !Ref PrivateRouteTable }
+  AppAssocB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref AppSubnetB, RouteTableId: !Ref PrivateRouteTable }
+  DbAssocA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref DbSubnetA, RouteTableId: !Ref PrivateRouteTable }
+  DbAssocB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: { SubnetId: !Ref DbSubnetB, RouteTableId: !Ref PrivateRouteTable }
+
+  # Network ACL for the app tier (stateless - return traffic must be allowed explicitly)
+  AppNacl:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref Vpc
+      Tags: [{ Key: Name, Value: app-nacl }]
+  AppNaclInHttp:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref AppNacl
+      RuleNumber: 100
+      Egress: false
+      Protocol: 6
+      PortRange: { From: 80, To: 80 }
+      CidrBlock: 10.0.0.0/16
+      RuleAction: !If [NaclBlockHttp, deny, allow]
+  AppNaclInEphemeral:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref AppNacl
+      RuleNumber: 110
+      Egress: false
+      Protocol: 6
+      PortRange: { From: 1024, To: 65535 }
+      CidrBlock: 0.0.0.0/0
+      RuleAction: allow
+  AppNaclOut100:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref AppNacl
+      RuleNumber: 100
+      Egress: true
+      Protocol: !If [NaclNoEphemeral, 6, -1]
+      PortRange: !If [NaclNoEphemeral, { From: 443, To: 443 }, !Ref AWS::NoValue]
+      CidrBlock: 0.0.0.0/0
+      RuleAction: allow
+  AppNaclOut110:
+    Type: AWS::EC2::NetworkAclEntry
+    Condition: NaclNoEphemeral
+    Properties:
+      NetworkAclId: !Ref AppNacl
+      RuleNumber: 110
+      Egress: true
+      Protocol: 6
+      PortRange: { From: 80, To: 80 }
+      CidrBlock: 0.0.0.0/0
+      RuleAction: allow
+  AppNaclOut120:
+    Type: AWS::EC2::NetworkAclEntry
+    Condition: NaclNoEphemeral
+    Properties:
+      NetworkAclId: !Ref AppNacl
+      RuleNumber: 120
+      Egress: true
+      Protocol: 6
+      PortRange: { From: 5432, To: 5432 }
+      CidrBlock: 10.0.0.0/16
+      RuleAction: allow
+  AppNaclAssocA:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties: { SubnetId: !Ref AppSubnetA, NetworkAclId: !Ref AppNacl }
+  AppNaclAssocB:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties: { SubnetId: !Ref AppSubnetB, NetworkAclId: !Ref AppNacl }
+
+  # ------------------------------------------------------- Security groups
+  AlbSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB - HTTP from the internet
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - { IpProtocol: tcp, FromPort: 80, ToPort: 80, CidrIp: 0.0.0.0/0 }
+      Tags: [{ Key: Name, Value: alb-sg }]
+  AppSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: App instances - HTTP from the ALB only
+      VpcId: !Ref Vpc
+      Tags: [{ Key: Name, Value: app-sg }]
+  AppSgIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref AppSg
+      IpProtocol: tcp
+      FromPort: !If [SgWrongPort, 8080, 80]
+      ToPort: !If [SgWrongPort, 8080, 80]
+      SourceSecurityGroupId: !Ref AlbSg
+  DbSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: RDS - PostgreSQL from app instances only
+      VpcId: !Ref Vpc
+      Tags: [{ Key: Name, Value: db-sg }]
+  DbSgIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref DbSg
+      IpProtocol: tcp
+      FromPort: !If [DbSgWrong, 3306, 5432]
+      ToPort: !If [DbSgWrong, 3306, 5432]
+      SourceSecurityGroupId: !Ref AppSg
+
+  # ----------------------------------------------------------- Database
+  DbSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Private DB subnets
+      SubnetIds: [!Ref DbSubnetA, !Ref DbSubnetB]
+  Database:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      Engine: postgres
+      DBInstanceClass: db.t4g.micro
+      AllocatedStorage: "20"
+      StorageType: gp3
+      DBName: labdb
+      MasterUsername: labadmin
+      ManageMasterUserPassword: true
+      DBSubnetGroupName: !Ref DbSubnetGroup
+      VPCSecurityGroups: [!Ref DbSg]
+      PubliclyAccessible: false
+      MultiAZ: false
+      BackupRetentionPeriod: 0
+
+  PrivateZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: lab.internal
+      VPCs:
+        - { VPCId: !Ref Vpc, VPCRegion: !Ref AWS::Region }
+  DbDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref PrivateZone
+      Name: db.lab.internal
+      Type: CNAME
+      TTL: "30"
+      ResourceRecords:
+        - !If [DnsWrong, db-old.lab.internal, !GetAtt Database.Endpoint.Address]
+
+  # ------------------------------------------------------------ Compute
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: ec2.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: read-db-secret
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !GetAtt Database.MasterUserSecret.SecretArn
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles: [!Ref InstanceRole]
+
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref LatestAmiId
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile: { Arn: !GetAtt InstanceProfile.Arn }
+        SecurityGroupIds: [!Ref AppSg]
+        MetadataOptions: { HttpTokens: required }
+        TagSpecifications:
+          - ResourceType: instance
+            Tags: [{ Key: Name, Value: breakfix-app }]
+        UserData:
+          Fn::Base64: |
+            #!/bin/bash
+            dnf install -y nginx postgresql15 nmap-ncat bind-utils traceroute
+            TOKEN=$(curl -s -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 300")
+            ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+            AZ=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/availability-zone)
+            echo "<h1>VPC Break-Fix Lab</h1><p>Served by $ID in $AZ</p>" > /usr/share/nginx/html/index.html
+            systemctl enable --now nginx
+
+  AppAsg:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn: [PrivateDefaultRoute, AppAssocA, AppAssocB]
+    Properties:
+      VPCZoneIdentifier: [!Ref AppSubnetA, !Ref AppSubnetB]
+      MinSize: "2"
+      MaxSize: "2"
+      DesiredCapacity: "2"
+      HealthCheckType: EC2
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      TargetGroupARNs: [!Ref TargetGroup]
+
+  # ------------------------------------------------------- Load balancer
+  Alb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: IgwAttachment
+    Properties:
+      Scheme: internet-facing
+      Type: application
+      Subnets: [!Ref PublicSubnetA, !Ref PublicSubnetB]
+      SecurityGroups: [!Ref AlbSg]
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !Ref Vpc
+      Protocol: HTTP
+      Port: 80
+      TargetType: instance
+      HealthCheckPath: !If [HealthCheckWrong, /healthz, /]
+      HealthCheckIntervalSeconds: 10
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref Alb
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - { Type: forward, TargetGroupArn: !Ref TargetGroup }
+
+  # --------------------------------------------------------- Observability
+  FlowLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /breakfix-lab/${AWS::StackName}/vpc-flow-logs
+      RetentionInDays: 3
+  FlowLogRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: vpc-flow-logs.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: write-flow-logs
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                Resource: "*"
+  VpcFlowLog:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      ResourceId: !Ref Vpc
+      ResourceType: VPC
+      TrafficType: ALL
+      LogDestinationType: cloud-watch-logs
+      LogGroupName: !Ref FlowLogGroup
+      DeliverLogsPermissionArn: !GetAtt FlowLogRole.Arn
+      MaxAggregationInterval: 60
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Condition: HasEmail
+    Properties:
+      Subscription:
+        - { Protocol: email, Endpoint: !Ref AlertEmail }
+  UnhealthyHostsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: One or more ALB targets are unhealthy
+      Namespace: AWS/ApplicationELB
+      MetricName: UnHealthyHostCount
+      Dimensions:
+        - { Name: TargetGroup, Value: !GetAtt TargetGroup.TargetGroupFullName }
+        - { Name: LoadBalancer, Value: !GetAtt Alb.LoadBalancerFullName }
+      Statistic: Maximum
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: !If [HasEmail, [!Ref AlarmTopic], !Ref AWS::NoValue]
+  Alb5xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: ALB is returning 5xx errors
+      Namespace: AWS/ApplicationELB
+      MetricName: HTTPCode_ELB_5XX_Count
+      Dimensions:
+        - { Name: LoadBalancer, Value: !GetAtt Alb.LoadBalancerFullName }
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: !If [HasEmail, [!Ref AlarmTopic], !Ref AWS::NoValue]
+
+Outputs:
+  WebsiteUrl:
+    Value: !Sub http://${Alb.DNSName}
+  DbHostname:
+    Value: db.lab.internal
+  DbSecretArn:
+    Value: !GetAtt Database.MasterUserSecret.SecretArn
+  FlowLogGroupName:
+    Value: !Ref FlowLogGroup
+  AutoScalingGroup:
+    Value: !Ref AppAsg
+  TargetGroupArn:
+    Value: !Ref TargetGroup
+  Region:
+    Value: !Ref AWS::Region

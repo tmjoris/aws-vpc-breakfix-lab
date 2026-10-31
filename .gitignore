@@ -1,0 +1,5 @@
+.active-fault
+.alert-email
+*.log
+.aws/
+evidence/logs/*.json
