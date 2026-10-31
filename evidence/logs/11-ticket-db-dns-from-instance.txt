@@ -1,0 +1,14 @@
+# 2026-10-31T22:09:21Z
+$ aws ssm get-command-invocation --region eu-west-1 --command-id 086e420a-8dee-4d8c-af64-acffc171f5c0 --instance-id i-0fc850e01cd4cef8a --query [Status,StandardOutputContent,StandardErrorContent] --output text
+Failed	== dig
+db.lab.internal.	30	IN	CNAME	db-old.lab.internal.
+== nslookup
+Address:	10.0.0.2#53
+
+** server can't find db.lab.internal: NXDOMAIN
+
+== nc
+Ncat: Version 7.93 ( https://nmap.org/ncat )
+Ncat: Could not resolve hostname "db.lab.internal": Name or service not known. QUITTING.
+	failed to run commands: exit status 2
+# exit: 0

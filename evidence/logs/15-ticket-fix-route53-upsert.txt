@@ -1,0 +1,4 @@
+# 2026-10-31T22:11:01Z
+$ aws route53 change-resource-record-sets --hosted-zone-id Z06140673NLTM6X6NAMMU --change-batch file:///tmp/claude-1000/-home-pred-zero/d204af1c-f14a-4ebd-97a3-79b3051a3764/scratchpad/fix.json --query ChangeInfo.[Id,Status] --output text
+/change/C07100712HL55R5342NDM	PENDING
+# exit: 0

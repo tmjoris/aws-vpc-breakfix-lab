@@ -1,0 +1,5 @@
+# 2026-10-31T22:10:48Z isolate: connectivity to the real RDS endpoint (bypassing DNS)
+Success	Ncat: Version 7.93 ( https://nmap.org/ncat )
+Ncat: Connected to 10.0.21.201:5432.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+	

@@ -1,0 +1,7 @@
+# 2026-10-31T22:12:34Z psql login via db.lab.internal after fix
+Success	         connected_at          |  db   
+-------------------------------+-------
+ 2026-10-31 22:12:22.695415+00 | labdb
+(1 row)
+
+	

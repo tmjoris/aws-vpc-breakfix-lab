@@ -1,0 +1,4 @@
+# 2026-10-31T22:15:56Z
+$ bash -c aws route53 list-resource-record-sets --hosted-zone-id Z06140673NLTM6X6NAMMU --query "ResourceRecordSets[?Type=='CNAME'].[Name,ResourceRecords[0].Value]" --output text
+db.lab.internal.	breakfix-lab-database-c3txypk8lyf2.cb6i48kmq8zg.eu-west-1.rds.amazonaws.com
+# exit: 0

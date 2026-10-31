@@ -1,0 +1,5 @@
+# 2026-10-31T22:08:58Z
+$ aws ssm describe-instance-information --region eu-west-1 --query InstanceInformationList[].[InstanceId,PingStatus] --output text
+i-089efa901a54af0ab	Online
+i-0fc850e01cd4cef8a	Online
+# exit: 0
