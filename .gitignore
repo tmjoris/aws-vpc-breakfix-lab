@@ -3,3 +3,4 @@
 *.log
 .aws/
 evidence/logs/*.json
+.queue
