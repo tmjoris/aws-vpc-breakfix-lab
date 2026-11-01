@@ -262,4 +262,6 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 ## Cost
 
-The lab runs at about $0.13 per hour in eu-west-1, mostly the NAT Gateway and the ALB. A $10 monthly budget with 50% and 100% email alerts guards it, and the stack is deleted with `./lab.sh destroy` when work ends.
+The lab runs at about $0.13 per hour in eu-west-1, mostly the NAT Gateway and the ALB. A $10 monthly budget with 50% and 100% email alerts guarded it.
+
+The stack ran from 2026-10-31 21:37 UTC to 2026-11-01 03:37 UTC, about 6 hours, which is roughly $0.80 of infrastructure plus about $0.20 for two Reachability Analyzer runs, so around $1 in total (covered by account credits). It was deleted with `./lab.sh destroy` ([log](evidence/logs/99-destroy.txt)). A check afterwards found no RDS instance, NAT gateway, load balancer, running instance, Elastic IP, VPC, flow-log group, secret or private hosted zone left. Redeploying takes about 9 minutes.
