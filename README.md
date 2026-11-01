@@ -65,7 +65,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 12m40s, fixed 14m09s, verified 14m54s.
 
-**Evidence:** [09-ticket-target-health](evidence/logs/09-ticket-target-health.txt), [10-ticket-ssm-status](evidence/logs/10-ticket-ssm-status.txt), [11-ticket-db-dns-from-instance](evidence/logs/11-ticket-db-dns-from-instance.txt), [12-ticket-route53-records](evidence/logs/12-ticket-route53-records.txt), [13-ticket-actual-rds-endpoint](evidence/logs/13-ticket-actual-rds-endpoint.txt), [14-ticket-nc-direct-to-rds](evidence/logs/14-ticket-nc-direct-to-rds.txt), [15-ticket-fix-route53-upsert](evidence/logs/15-ticket-fix-route53-upsert.txt), [17-ticket-verify-after-fix](evidence/logs/17-ticket-verify-after-fix.txt), [18-ticket-psql-after-fix](evidence/logs/18-ticket-psql-after-fix.txt), [20-post-reset-dns-check](evidence/logs/20-post-reset-dns-check.txt), [screenshot](evidence/screenshots/15-ticket-f-broken-cname.jpg), [screenshot](evidence/screenshots/16-ticket-f-fixed-cname.jpg)
+**Logs:** [09-ticket-target-health](evidence/logs/09-ticket-target-health.txt), [10-ticket-ssm-status](evidence/logs/10-ticket-ssm-status.txt), [11-ticket-db-dns-from-instance](evidence/logs/11-ticket-db-dns-from-instance.txt), [12-ticket-route53-records](evidence/logs/12-ticket-route53-records.txt), [13-ticket-actual-rds-endpoint](evidence/logs/13-ticket-actual-rds-endpoint.txt), [14-ticket-nc-direct-to-rds](evidence/logs/14-ticket-nc-direct-to-rds.txt), [15-ticket-fix-route53-upsert](evidence/logs/15-ticket-fix-route53-upsert.txt), [17-ticket-verify-after-fix](evidence/logs/17-ticket-verify-after-fix.txt), [18-ticket-psql-after-fix](evidence/logs/18-ticket-psql-after-fix.txt), [20-post-reset-dns-check](evidence/logs/20-post-reset-dns-check.txt)
+
+**Screenshots:** [ticket f broken cname](evidence/screenshots/15-ticket-f-broken-cname.jpg), [ticket f fixed cname](evidence/screenshots/16-ticket-f-fixed-cname.jpg)
 
 ### Ticket 2: C (`nacl-no-ephemeral`)
 
@@ -88,7 +90,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 3m30s, fixed 4m03s, verified 4m48s.
 
-**Evidence:** [t2-1-symptoms](evidence/logs/t2-1-symptoms.txt), [t2-1b-patient-curl](evidence/logs/t2-1b-patient-curl.txt), [t2-2-config](evidence/logs/t2-2-config.txt), [t2-3-flowlog-rejects-from-app](evidence/logs/t2-3-flowlog-rejects-from-app.txt), [t2-4-fix-nacl-egress](evidence/logs/t2-4-fix-nacl-egress.txt), [t2-5-after-fix](evidence/logs/t2-5-after-fix.txt), [t2-6-remove-manual-rule](evidence/logs/t2-6-remove-manual-rule.txt), [t2-7-after-reset](evidence/logs/t2-7-after-reset.txt), [screenshot](evidence/screenshots/17-ticket2-targets-unhealthy.jpg)
+**Logs:** [t2-1-symptoms](evidence/logs/t2-1-symptoms.txt), [t2-1b-patient-curl](evidence/logs/t2-1b-patient-curl.txt), [t2-2-config](evidence/logs/t2-2-config.txt), [t2-3-flowlog-rejects-from-app](evidence/logs/t2-3-flowlog-rejects-from-app.txt), [t2-4-fix-nacl-egress](evidence/logs/t2-4-fix-nacl-egress.txt), [t2-5-after-fix](evidence/logs/t2-5-after-fix.txt), [t2-6-remove-manual-rule](evidence/logs/t2-6-remove-manual-rule.txt), [t2-7-after-reset](evidence/logs/t2-7-after-reset.txt)
+
+**Screenshots:** [ticket2 targets unhealthy](evidence/screenshots/17-ticket2-targets-unhealthy.jpg), [app nacl outbound broken](evidence/screenshots/38-t2-app-nacl-outbound-broken.png), [targets timeout broken](evidence/screenshots/39-t2-targets-timeout-broken.png), [site 504 broken](evidence/screenshots/40-t2-site-504-broken.png), [app nacl outbound fixed](evidence/screenshots/41-t2-app-nacl-outbound-fixed.png), [targets healthy fixed](evidence/screenshots/42-t2-targets-healthy-fixed.png)
 
 ### Ticket 3: A (`public-no-igw-route`)
 
@@ -110,7 +114,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 4m28s, fixed 8m13s, verified 8m24s.
 
-**Evidence:** [t3-1-symptoms](evidence/logs/t3-1-symptoms.txt), [t3-1b-patient-curl](evidence/logs/t3-1b-patient-curl.txt), [t3-2-config](evidence/logs/t3-2-config.txt), [t3-3c-diagnosis-before-reveal](evidence/logs/t3-3c-diagnosis-before-reveal.txt), [t3-4-fix-add-igw-route](evidence/logs/t3-4-fix-add-igw-route.txt), [t3-5-after-fix](evidence/logs/t3-5-after-fix.txt), [t3-6-remove-manual-route](evidence/logs/t3-6-remove-manual-route.txt), [t3-7-after-reset](evidence/logs/t3-7-after-reset.txt)
+**Logs:** [t3-1-symptoms](evidence/logs/t3-1-symptoms.txt), [t3-1b-patient-curl](evidence/logs/t3-1b-patient-curl.txt), [t3-2-config](evidence/logs/t3-2-config.txt), [t3-3c-diagnosis-before-reveal](evidence/logs/t3-3c-diagnosis-before-reveal.txt), [t3-4-fix-add-igw-route](evidence/logs/t3-4-fix-add-igw-route.txt), [t3-5-after-fix](evidence/logs/t3-5-after-fix.txt), [t3-6-remove-manual-route](evidence/logs/t3-6-remove-manual-route.txt), [t3-7-after-reset](evidence/logs/t3-7-after-reset.txt)
+
+**Screenshots:** [site timeout broken](evidence/screenshots/34-t3-site-timeout-broken.png), [public rt no igw route broken](evidence/screenshots/35-t3-public-rt-no-igw-route-broken.png), [public rt igw route fixed](evidence/screenshots/36-t3-public-rt-igw-route-fixed.png), [site ok fixed](evidence/screenshots/37-t3-site-ok-fixed.png)
 
 ### Ticket 4: D (`health-check-path`)
 
@@ -132,7 +138,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 2m24s, fixed 2m33s, verified 3m18s.
 
-**Evidence:** [t4-1-symptoms](evidence/logs/t4-1-symptoms.txt), [t4-2-config](evidence/logs/t4-2-config.txt), [t4-3-nginx-paths](evidence/logs/t4-3-nginx-paths.txt), [t4-3c-diagnosis-before-reveal](evidence/logs/t4-3c-diagnosis-before-reveal.txt), [t4-4-fix-health-check-path](evidence/logs/t4-4-fix-health-check-path.txt), [t4-5-after-fix](evidence/logs/t4-5-after-fix.txt), [t4-7-after-reset](evidence/logs/t4-7-after-reset.txt)
+**Logs:** [t4-1-symptoms](evidence/logs/t4-1-symptoms.txt), [t4-2-config](evidence/logs/t4-2-config.txt), [t4-3-nginx-paths](evidence/logs/t4-3-nginx-paths.txt), [t4-3c-diagnosis-before-reveal](evidence/logs/t4-3c-diagnosis-before-reveal.txt), [t4-4-fix-health-check-path](evidence/logs/t4-4-fix-health-check-path.txt), [t4-5-after-fix](evidence/logs/t4-5-after-fix.txt), [t4-7-after-reset](evidence/logs/t4-7-after-reset.txt)
+
+**Screenshots:** [targets response code mismatch broken](evidence/screenshots/50-t4-targets-response-code-mismatch-broken.png), [health check root fixed](evidence/screenshots/52-t4-health-check-root-fixed.png), [targets healthy fixed](evidence/screenshots/53-t4-targets-healthy-fixed.png)
 
 ### Ticket 5: C (`sg-wrong-port`)
 
@@ -155,7 +163,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 3m33s, fixed 3m47s, verified 4m38s.
 
-**Evidence:** [t5-1-symptoms](evidence/logs/t5-1-symptoms.txt), [t5-2-config](evidence/logs/t5-2-config.txt), [t5-3-reachability-analyzer](evidence/logs/t5-3-reachability-analyzer.txt), [t5-3c-diagnosis-before-reveal](evidence/logs/t5-3c-diagnosis-before-reveal.txt), [t5-4-fix-sg-allow-80](evidence/logs/t5-4-fix-sg-allow-80.txt), [t5-5-after-fix](evidence/logs/t5-5-after-fix.txt), [t5-5b-reachability-after-fix](evidence/logs/t5-5b-reachability-after-fix.txt), [t5-6-remove-manual-rule](evidence/logs/t5-6-remove-manual-rule.txt), [t5-7-after-reset](evidence/logs/t5-7-after-reset.txt)
+**Logs:** [t5-1-symptoms](evidence/logs/t5-1-symptoms.txt), [t5-2-config](evidence/logs/t5-2-config.txt), [t5-3-reachability-analyzer](evidence/logs/t5-3-reachability-analyzer.txt), [t5-3c-diagnosis-before-reveal](evidence/logs/t5-3c-diagnosis-before-reveal.txt), [t5-4-fix-sg-allow-80](evidence/logs/t5-4-fix-sg-allow-80.txt), [t5-5-after-fix](evidence/logs/t5-5-after-fix.txt), [t5-5b-reachability-after-fix](evidence/logs/t5-5b-reachability-after-fix.txt), [t5-6-remove-manual-rule](evidence/logs/t5-6-remove-manual-rule.txt), [t5-7-after-reset](evidence/logs/t5-7-after-reset.txt)
+
+**Screenshots:** [app sg 8080 broken](evidence/screenshots/46-t5-app-sg-8080-broken.png), [targets timeout broken](evidence/screenshots/47-t5-targets-timeout-broken.png), [app sg 80 fixed](evidence/screenshots/48-t5-app-sg-80-fixed.png)
 
 ### Ticket 6: C (`nacl-block-http`)
 
@@ -177,7 +187,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 2m35s, fixed 3m02s, verified 3m48s.
 
-**Evidence:** [t6-1-symptoms](evidence/logs/t6-1-symptoms.txt), [t6-2-config](evidence/logs/t6-2-config.txt), [t6-3c-diagnosis-before-reveal](evidence/logs/t6-3c-diagnosis-before-reveal.txt), [t6-4-fix-nacl-inbound-80](evidence/logs/t6-4-fix-nacl-inbound-80.txt), [t6-5-after-fix](evidence/logs/t6-5-after-fix.txt), [t6-7-after-reset](evidence/logs/t6-7-after-reset.txt)
+**Logs:** [t6-1-symptoms](evidence/logs/t6-1-symptoms.txt), [t6-2-config](evidence/logs/t6-2-config.txt), [t6-3c-diagnosis-before-reveal](evidence/logs/t6-3c-diagnosis-before-reveal.txt), [t6-4-fix-nacl-inbound-80](evidence/logs/t6-4-fix-nacl-inbound-80.txt), [t6-5-after-fix](evidence/logs/t6-5-after-fix.txt), [t6-7-after-reset](evidence/logs/t6-7-after-reset.txt)
+
+**Screenshots:** [app nacl inbound deny broken](evidence/screenshots/43-t6-app-nacl-inbound-deny-broken.png), [targets timeout broken](evidence/screenshots/44-t6-targets-timeout-broken.png), [app nacl inbound allow fixed](evidence/screenshots/45-t6-app-nacl-inbound-allow-fixed.png)
 
 ### Ticket 7: E (`db-sg-wrong-port`)
 
@@ -199,7 +211,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 2m52s, fixed 3m07s, verified 3m29s.
 
-**Evidence:** [t7-1-symptoms](evidence/logs/t7-1-symptoms.txt), [t7-2-config](evidence/logs/t7-2-config.txt), [t7-3-db-connect-timeout](evidence/logs/t7-3-db-connect-timeout.txt), [t7-3b-flowlog-rejects-5432](evidence/logs/t7-3b-flowlog-rejects-5432.txt), [t7-3c-diagnosis-before-reveal](evidence/logs/t7-3c-diagnosis-before-reveal.txt), [t7-4-fix-db-sg-allow-5432](evidence/logs/t7-4-fix-db-sg-allow-5432.txt), [t7-5-after-fix-db-login](evidence/logs/t7-5-after-fix-db-login.txt), [t7-6-remove-manual-rule](evidence/logs/t7-6-remove-manual-rule.txt), [t7-7-after-reset](evidence/logs/t7-7-after-reset.txt)
+**Logs:** [t7-1-symptoms](evidence/logs/t7-1-symptoms.txt), [t7-2-config](evidence/logs/t7-2-config.txt), [t7-3-db-connect-timeout](evidence/logs/t7-3-db-connect-timeout.txt), [t7-3b-flowlog-rejects-5432](evidence/logs/t7-3b-flowlog-rejects-5432.txt), [t7-3c-diagnosis-before-reveal](evidence/logs/t7-3c-diagnosis-before-reveal.txt), [t7-4-fix-db-sg-allow-5432](evidence/logs/t7-4-fix-db-sg-allow-5432.txt), [t7-5-after-fix-db-login](evidence/logs/t7-5-after-fix-db-login.txt), [t7-6-remove-manual-rule](evidence/logs/t7-6-remove-manual-rule.txt), [t7-7-after-reset](evidence/logs/t7-7-after-reset.txt)
+
+**Screenshots:** [db sg 3306 broken](evidence/screenshots/54-t7-db-sg-3306-broken.png), [db sg 5432 fixed](evidence/screenshots/55-t7-db-sg-5432-fixed.png)
 
 ### Ticket 8: B (`private-no-nat-route`)
 
@@ -221,7 +235,9 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 
 **Times:** diagnosed 3m26s, fixed 3m46s, verified 4m58s.
 
-**Evidence:** [t8-1-symptoms](evidence/logs/t8-1-symptoms.txt), [t8-2-config](evidence/logs/t8-2-config.txt), [t8-3-ssm-state](evidence/logs/t8-3-ssm-state.txt), [t8-3c-diagnosis-before-reveal](evidence/logs/t8-3c-diagnosis-before-reveal.txt), [t8-4-fix-private-route-to-nat](evidence/logs/t8-4-fix-private-route-to-nat.txt), [t8-5-after-fix](evidence/logs/t8-5-after-fix.txt), [t8-7-after-reset](evidence/logs/t8-7-after-reset.txt)
+**Logs:** [t8-1-symptoms](evidence/logs/t8-1-symptoms.txt), [t8-2-config](evidence/logs/t8-2-config.txt), [t8-3-ssm-state](evidence/logs/t8-3-ssm-state.txt), [t8-3c-diagnosis-before-reveal](evidence/logs/t8-3c-diagnosis-before-reveal.txt), [t8-4-fix-private-route-to-nat](evidence/logs/t8-4-fix-private-route-to-nat.txt), [t8-5-after-fix](evidence/logs/t8-5-after-fix.txt), [t8-7-after-reset](evidence/logs/t8-7-after-reset.txt)
+
+**Screenshots:** [private rt igw broken](evidence/screenshots/56-t8-private-rt-igw-broken.png), [ssm status lags while broken](evidence/screenshots/57-t8-ssm-status-lags-while-broken.png), [private rt nat fixed](evidence/screenshots/58-t8-private-rt-nat-fixed.png)
 
 ## Healthy baseline
 
@@ -242,9 +258,7 @@ Two lessons from the data itself: a timeout means a filter dropped the packet an
 ## Evidence
 
 - Command output with UTC timestamps: [`evidence/logs/`](evidence/logs/). Files named `t<N>-...` belong to ticket N, in the order symptoms, config, diagnosis, fix, after-fix, reset.
-- Console screenshots: [`evidence/screenshots/`](evidence/screenshots/). Healthy baseline 01 to 14; ticket 1 [broken](evidence/screenshots/15-ticket-f-broken-cname.jpg) and [fixed](evidence/screenshots/16-ticket-f-fixed-cname.jpg); ticket 2 [targets unhealthy](evidence/screenshots/17-ticket2-targets-unhealthy.jpg). The console screenshot tool froze repeatedly part-way through, so tickets 3 to 8 are evidenced by command output rather than screenshots.
-- Ticket notes: [TICKET_LOG.md](TICKET_LOG.md)
-- The AWS account ID is redacted in screenshots and logs (shown as `123456789012`).
+- Console screenshots: [`evidence/screenshots/`](evidence/screenshots/). Healthy baseline: 01 to 14 and 18 to 30, 33, 60 (CloudFormation events, resources, outputs and template; VPC, subnets, internet and NAT gateways, security groups, DHCP option sets; Auto Scaling group, launch templates; EC2 instances; the CloudWatch Logs Insights REJECT query). Each ticket links its own before and after shots, named `NN-t<ticket>-...`: the broken state is the console page that showed the fault, and the fixed state is the same page after the reset.\n- Not every shot could be captured. The CloudWatch Logs Insights *results* page would not render for the automation, so the REJECT results are in the text logs (`t2-3`, `t7-3b`). Systems Manager still showed both nodes `Online` for several minutes into the NAT fault, because its ping status lags; that screenshot is kept and named for it.\n- The AWS account ID is redacted in screenshots and logs (shown as `123456789012`). Each screenshot was taken after the page text was rewritten in every frame, and the capture refuses to save if the real ID is still on screen.\n- Ticket notes: [TICKET_LOG.md](TICKET_LOG.md)
 
 ## Cost
 
