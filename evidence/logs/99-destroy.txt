@@ -1,0 +1,4 @@
+# 2026-11-01T03:27:02Z ./lab.sh destroy started
+Deleting stack breakfix-lab in eu-west-1...
+Deleted. Nothing is billing you any more.
+# 2026-11-01T03:37:22Z destroy finished, exit 0
